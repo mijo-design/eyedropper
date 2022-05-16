@@ -1,0 +1,34 @@
+<button onclick="pickColor()">Pick Color</button>
+<div style="width: 200px; height: 200px;">
+    <p>Pick a color to display here!</p>
+</div>
+
+<script>
+    const background = document.querySelector("div")
+    const text = document.querySelector("p")
+
+    async function startEyeDropper() {
+        const eyeDropper = new EyeDropper()
+        try {
+            const result = await eyeDropper.open()
+            return result.sRGBHex
+        } catch (e) {
+            return null
+        }
+    }
+
+    async function pickColor() {
+        const color = await startEyeDropper()
+        
+        background.style.backgroundColor = color
+        text.textContent = color
+
+        text.style.color = await getColorByBgColor(color)
+    }
+
+    // This is only a helper
+    async function getColorByBgColor(bgColor) {
+        if (!bgColor) { return ''; }
+        return (parseInt(bgColor.replace('#', ''), 16) > 0xffffff / 2) ? '#000' : '#fff';
+    }    
+</script>
